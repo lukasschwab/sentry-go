@@ -1,10 +1,11 @@
 module github.com/getsentry/sentry-go
 
-go 1.21
+go 1.23.5
 
 require (
 	github.com/go-errors/errors v1.4.2
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.7.0
+	github.com/lukasschwab/terrors v0.0.0
 	github.com/pingcap/errors v0.11.4
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.2

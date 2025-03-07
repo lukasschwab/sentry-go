@@ -19,7 +19,7 @@ func TestErrorTree(t *testing.T) {
 				{
 					Value:     "simple error",
 					Type:      "*errors.errorString",
-					Mechanism: &Mechanism{Type: "generic", IsExceptionGroup: true},
+					Mechanism: &Mechanism{Type: "generic", IsExceptionGroup: false},
 				},
 			},
 		},

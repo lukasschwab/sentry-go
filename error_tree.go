@@ -2,7 +2,6 @@ package sentry
 
 import (
 	"errors"
-	"reflect"
 )
 
 type errorTree struct {
@@ -38,35 +37,37 @@ func (et errorTree) children() []errorTree {
 // Exceptions in et, ordered from earliest to latest. All exception Mechanisms
 // returned here are as if the exceptions belong to a group.
 func (et errorTree) Exceptions() []Exception {
-	if et.Err == nil {
-		return nil
-	}
+	return exceptions(et.Err)
 
-	// Child exceptions are chronologically earlier.
-	children := et.children()
-	exceptions := make([]Exception, 0, len(children))
-	for _, child := range children {
-		exceptions = join(exceptions, child.Exceptions()...)
-	}
+	// if et.Err == nil {
+	// 	return nil
+	// }
 
-	// Append this error.
-	mechanism := &Mechanism{
-		IsExceptionGroup: true,
-		ExceptionID:      len(exceptions),
-		Type:             "generic",
-	}
-	if len(children) == 1 {
-		// Part of a causal chain; record parent-child relationship.
-		lastChild := exceptions[len(exceptions)-1]
-		mechanism.ParentID = Pointer(lastChild.Mechanism.ExceptionID)
-	}
-	exceptions = append(exceptions, Exception{
-		Value:      et.Err.Error(),
-		Type:       reflect.TypeOf(et.Err).String(),
-		Stacktrace: ExtractStacktrace(et.Err),
-		Mechanism:  mechanism,
-	})
-	return exceptions
+	// // Child exceptions are chronologically earlier.
+	// children := et.children()
+	// exceptions := make([]Exception, 0, len(children))
+	// for _, child := range children {
+	// 	exceptions = join(exceptions, child.Exceptions()...)
+	// }
+
+	// // Append this error.
+	// mechanism := &Mechanism{
+	// 	IsExceptionGroup: true,
+	// 	ExceptionID:      len(exceptions),
+	// 	Type:             "generic",
+	// }
+	// if len(children) == 1 {
+	// 	// Part of a causal chain; record parent-child relationship.
+	// 	lastChild := exceptions[len(exceptions)-1]
+	// 	mechanism.ParentID = Pointer(lastChild.Mechanism.ExceptionID)
+	// }
+	// exceptions = append(exceptions, Exception{
+	// 	Value:      et.Err.Error(),
+	// 	Type:       reflect.TypeOf(et.Err).String(),
+	// 	Stacktrace: ExtractStacktrace(et.Err),
+	// 	Mechanism:  mechanism,
+	// })
+	// return exceptions
 }
 
 // join Exception sequences, adjusting indexed IDs (ExceptionID, ParentID).
